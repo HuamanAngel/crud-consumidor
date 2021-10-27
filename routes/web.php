@@ -21,20 +21,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name("newHome");
 
-Route::post('/session/logout',[AuthController::class,'logout'])->name('logout.api');
-Route::post('/api/register', [ArticlesController::class,'registerApi'])->name('registerApi');
-Route::post('/loginProcess',[ArticlesController::class,'login'])->name('loginProcess');
-Route::get('/show/articles',[ArticlesController::class,'showAll'])->name('showAllArticle');
-
-
+Route::post('/registerApi', [AuthController::class,'registerApi'])->name('registerApi');
+Route::post('/loginProcess',[AuthController::class,'login'])->name('loginProcess');
+Route::middleware(['auth.api.verified'])->group(function () {
+    Route::post('/session/logout',[AuthController::class,'logout'])->name('logout.api');
+    Route::resource('articles', ArticleController::class);
+});
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('nuevo',function(){
-    return view('nuevo');
-});
-Route::get('template',function(){
-    return view('template');
-});
-
-Route::resource('articles', ArticleController::class);
